@@ -1,0 +1,11 @@
+supplier_id,supplier_name,supplier_location,supplier_rating
+1,Supplier_1,City_E,2.0
+2,Supplier_2,City_E,5.0
+3,Supplier_3,City_G,5.0
+4,Supplier_4,City_G,1.0
+5,Supplier_5,City_F,4.0
+6,Supplier_6,City_E,1.0
+7,Supplier_7,City_G,4.0
+8,Supplier_8,City_E,4.0
+9,Supplier_9,City_G,5.0
+10,Supplier_10,City_F,3.0
