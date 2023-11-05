@@ -1,0 +1,4 @@
+venv_co2
+src/__pycache__
+.gitignore
+experiments.txt
