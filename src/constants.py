@@ -12,3 +12,7 @@ PROJECTS_DATA = os.path.join(DATA, 'projects_data.csv')
 SUPPLIERS_DATA = os.path.join(DATA, 'suppliers_data.csv')
 FINAL_DATA_parquet = os.path.join(DATA, 'final_df.parquet')
 FINAL_DATA_csv = os.path.join(DATA, 'final_df.csv')
+# pre-processed data
+TEST_TRANSFORMED_DATA = os.path.join(DATA, 'test_transformed.parquet')
+TRAIN_TRANSFORMED_DATA = os.path.join(DATA, 'train_transformed.parquet')
+
