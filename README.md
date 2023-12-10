@@ -15,3 +15,6 @@ Local Storage Solution:
 Database for Processed Data:
 - Use a local SQL database like SQLite or PostgreSQL for structured data.
 - Consider incorporating a local NoSQL database like MongoDB for complex or semi-structured data.
+
+
+#### PLANNING DESIGN FOR PRODUCTION DEPLOYMENT ####
