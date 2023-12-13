@@ -3,4 +3,5 @@ src/__pycache__
 .gitignore
 experiments.txt
 questions.md
-
+.vscode
+.env
