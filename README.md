@@ -18,3 +18,29 @@ Database for Processed Data:
 
 
 #### PLANNING DESIGN FOR PRODUCTION DEPLOYMENT ####
+
+### PostgreSQL Database Configuration and Data Import
+
+#### Setting up PostgreSQL
+- Install PostgreSQL within the environment.
+- Create a PostgreSQL database and user for the project.
+
+#### Configuring PostgreSQL Authentication
+- Modify the PostgreSQL `pg_hba.conf` file to use `scram-sha-256` authentication for increased security.
+- Location of `pg_hba.conf`: `/etc/postgresql/<version>/main/pg_hba.conf` (replace `<version>` with your PostgreSQL version).
+- After modifying `pg_hba.conf`, restart the PostgreSQL service using `sudo service postgresql restart`.
+
+#### Data Import Script
+- Use `run_sql.sh` shell script to import CSV data into the PostgreSQL database.
+- The script replaces placeholders in the SQL import script with actual file paths and executes the SQL command.
+1. **Create a Shell Script** (e.g., `run_sql.sh`) in your project root.
+2. **Script Content**:
+   ```bash
+   #!/bin/bash
+   CSV_PATH="/your/path/to/logistics_data.csv"  # Replace with your path
+   SQL_FILE="/your/path/to/sql/import_script.sql"  # Replace with your path
+
+   # Replace placeholder in SQL file and execute
+   sed "s|<PATH_TO_CSV>|${CSV_PATH}|g" $SQL_FILE | psql -U your_username -d your_database
+
+- Make the script executable with `chmod +x run_sql.sh` and run it with `./run_sql.sh`.

@@ -5,3 +5,4 @@ experiments.txt
 questions.md
 .vscode
 .env
+run_sql.sh

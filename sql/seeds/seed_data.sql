@@ -1,1 +1,1 @@
-\copy logistics FROM '${DATA_DIR}/logistics_data.csv' WITH (FORMAT csv, HEADER);
+\copy logistics FROM '<PATH_TO_LOGISTICS_CSV>' WITH (FORMAT csv, HEADER);
