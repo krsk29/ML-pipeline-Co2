@@ -1,1 +1,8 @@
 \copy logistics FROM '<PATH_TO_LOGISTICS_CSV>' WITH (FORMAT csv, HEADER);
+
+\copy materials FROM '<PATH_TO_MATERIALS_CSV>' WITH (FORMAT csv, HEADER);
+
+\copy projects FROM '<PATH_TO_PROJECTS_CSV>' WITH (FORMAT csv, HEADER);
+
+\copy suppliers FROM '<PATH_TO_SUPPLIERS_CSV>' WITH (FORMAT csv, HEADER);
+
