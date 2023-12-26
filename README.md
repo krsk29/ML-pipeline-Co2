@@ -1,46 +1,56 @@
-# ML-pipeline-Co2
-End-to-end ML pipeline predicting Co2 emissions in construction logistics. Uses PySpark, Apache Airflow, Apache Beam.
+# ML-Pipeline-Co2
+## End-to-End Machine Learning Pipeline for Predicting CO2 Emissions in Construction Logistics
 
-## The ambition here is to simulate a big data environment and production at scale
+This project develops an end-to-end machine learning pipeline to predict CO2 emissions in construction logistics. It leverages PySpark, Apache Airflow, and Apache Beam to simulate a big data environment and production at scale.
 
-# Data Ingestion and Storage
-Data Source Simulation:
-- Use script-generated data
-- Simulate real-time data streams by periodically generating data and pushing it into the ingestion pipeline.
+### Objective
+The aim is to create a robust pipeline capable of handling large-scale data, simulating real-world scenarios in construction logistics, and providing accurate predictions of CO2 emissions.
 
-Local Storage Solution:
-- Use a filesystem-based approach for simplicity and local constraints.
-- Structure the directory in a format that mimics a data lake structure for scalability simulation
+---
 
-Database for Processed Data:
-- Use a local SQL database like SQLite or PostgreSQL for structured data.
-- Consider incorporating a local NoSQL database like MongoDB for complex or semi-structured data.
+## Data Ingestion and Storage
 
+### Data Source Simulation
+- **Script-Generated Data**: Simulate real-time data streams.
+- **Periodic Data Generation**: Push data into the pipeline at regular intervals to mimic real-world data flow.
+- **Local PostgreSQL Database**: Manually populated with initial data sets. Future updates will introduce more data to simulate evolving datasets.
 
-#### PLANNING DESIGN FOR PRODUCTION DEPLOYMENT ####
+### Local Storage Solution
+- **Filesystem-Based Approach**: Emulate a data lake structure for scalability.
+- **Local PostgreSQL Database**: Implemented for structured data management.
 
-### PostgreSQL Database Configuration and Data Import
+### Database for Processed Data
+- **SQL Database Usage**: Local databases like SQLite or PostgreSQL for structured data.
+- **NoSQL Database Consideration**: Evaluate MongoDB for complex or semi-structured data.
+- **Data Ingestion Script**: `data_ingestion.py` for efficient data extraction and preparation.
 
-#### Setting up PostgreSQL
-- Install PostgreSQL within the environment.
-- Create a PostgreSQL database and user for the project.
+---
 
-#### Configuring PostgreSQL Authentication
-- Modify the PostgreSQL `pg_hba.conf` file to use `scram-sha-256` authentication for increased security.
-- Location of `pg_hba.conf`: `/etc/postgresql/<version>/main/pg_hba.conf` (replace `<version>` with your PostgreSQL version).
-- After modifying `pg_hba.conf`, restart the PostgreSQL service using `sudo service postgresql restart`.
+## PostgreSQL Database Configuration and Data Import
 
-#### Data Import Script
-- Use `run_sql.sh` shell script to import CSV data into the PostgreSQL database.
-- The script replaces placeholders in the SQL import script with actual file paths and executes the SQL command.
-1. **Create a Shell Script** (e.g., `run_sql.sh`) in your project root.
-2. **Script Content**:
+### Setting up PostgreSQL
+- **Installation**: Install PostgreSQL in the environment.
+- **Database and User Creation**: Specific to the project.
+
+### Configuring PostgreSQL Authentication
+- **Authentication Method**: Utilize `scram-sha-256` for security.
+- **Configuration File Location**: `/etc/postgresql/<version>/main/pg_hba.conf`.
+- **Service Restart**: Execute `sudo service postgresql restart` after modifications.
+
+### Data Import Script
+- **Shell Script**: `run_sql.sh` for importing CSV data.
+- **Usage**: Replace paths in the script with actual data and SQL file locations.
+- **Execution**:
    ```bash
    #!/bin/bash
-   CSV_PATH="/your/path/to/logistics_data.csv"  # Replace with your path
-   SQL_FILE="/your/path/to/sql/import_script.sql"  # Replace with your path
+   CSV_PATH="/your/path/to/logistics_data.csv" # Replace with your path
+   SQL_FILE="/your/path/to/sql/import_script.sql" # Replace with your path
 
    # Replace placeholder in SQL file and execute
    sed "s|<PATH_TO_CSV>|${CSV_PATH}|g" $SQL_FILE | psql -U your_username -d your_database
+- **Script Permission**: Make executable with chmod +x run_sql.sh.
+- **Run**: Execute with ./run_sql.sh.
 
-- Make the script executable with `chmod +x run_sql.sh` and run it with `./run_sql.sh`.
+### Environment and Security
+- **.env File**: For secure database credential management.
+- **Security Note**: Exclude .env from version control for privacy.
