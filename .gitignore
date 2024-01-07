@@ -8,6 +8,7 @@ questions.md
 run_sql.sh
 commands_utils.txt
 secrets.py
+logs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

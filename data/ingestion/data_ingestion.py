@@ -6,22 +6,31 @@ from sqlalchemy import create_engine
 import logging
 from sqlalchemy.exc import SQLAlchemyError
 
+# Function to safely get environment variable
+def get_env_variable(var_name, default=None):
+    value = os.getenv(var_name, default)
+    if value is None:
+        raise ValueError(f"{var_name} environment variable not set")
+    return value
+
 # Load environment variables from .env file
 load_dotenv()
 
+# Accessing environment variables with defensive checks
+logs_dir = get_env_variable('LOGS_DIR')
+data_ingested_dir = get_env_variable('DATA_INGESTED_DIR')
+db_username = get_env_variable('DB_USERNAME')
+db_password = get_env_variable('DB_PASSWORD')
+db_host = get_env_variable('DB_HOST', '127.0.0.1')
+db_port = get_env_variable('DB_PORT', '5432')
+db_name = get_env_variable('DB_NAME', 'postgres')
+
 # Configuring logging to write to a file
-logs_dir = os.getenv('LOGS_DIR')
 current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 log_filename = f'{logs_dir}/data_ingestion_{current_time}.log'
 logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Accessing credentials and database connection parameters
-db_username = os.getenv('DB_USERNAME')
-db_password = os.getenv('DB_PASSWORD')
-db_host = os.getenv('DB_HOST', '127.0.0.1')  # Default to localhost if not specified
-db_port = os.getenv('DB_PORT', '5432')       # Default to 5432 if not specified
-db_name = os.getenv('DB_NAME', 'postgres')    # Default to 'postgres' if not specified
-
 db_connection = f'postgresql://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}'
 
 # Function to create database engine
@@ -49,25 +58,33 @@ def read_table(engine, table_name, batch_size=None):
         logging.error(f"Error reading table {table_name}: {e}")
         raise
 
+#fucntion to save batch data to parquet
+def process_and_save_batches(generator, base_file_path):
+    for i, batch in enumerate(generator):
+        batch_file_path = f"{base_file_path}_{i}.parquet"
+        batch.to_parquet(batch_file_path)
+
 # Main function to execute data ingestion
 def main():
     engine = create_db_engine()
 
     # Read data from each table
     try:
-        df1 = read_table(engine, "logistics")
-        df2 = read_table(engine, "materials")
-        df3 = read_table(engine, "projects")
-        df4 = read_table(engine, "suppliers")
+        # Process and save data from each table
+        logistics_generator = read_table(engine, "logistics", batch_size=20000)
+        process_and_save_batches(logistics_generator, os.path.join(data_ingested_dir, "logistics"))
 
-        # Save each dataframe to a Parquet file
-        data_ingested_dir = os.getenv('DATA_INGESTED_DIR')
-        df1.to_parquet(f'{data_ingested_dir}/logistics.parquet')
-        df2.to_parquet(f'{data_ingested_dir}/materials.parquet')
-        df3.to_parquet(f'{data_ingested_dir}/projects.parquet')
-        df4.to_parquet(f'{data_ingested_dir}/suppliers.parquet')
+        materials_generator = read_table(engine, "materials", batch_size=20000)
+        process_and_save_batches(materials_generator, os.path.join(data_ingested_dir, "materials"))
+
+        projects_generator = read_table(engine, "projects", batch_size=20000)
+        process_and_save_batches(projects_generator, os.path.join(data_ingested_dir, "projects"))
+
+        suppliers_generator = read_table(engine, "suppliers", batch_size=20000)
+        process_and_save_batches(suppliers_generator, os.path.join(data_ingested_dir, "suppliers"))
 
         logging.info("Data ingestion and storage completed successfully.")
+
     except Exception as ex:
         logging.error(f"Data ingestion failed: {ex}")
 
