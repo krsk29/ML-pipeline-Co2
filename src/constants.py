@@ -8,7 +8,7 @@ MODELS = os.path.join(BASE_DIR, 'models')
 RANDOM_FOREST_MODEL = os.path.join(MODELS, 'random_forest')
 
 #data
-DATA = os.path.join(BASE_DIR, 'raw', 'data')
+DATA = os.path.join(BASE_DIR, 'data', 'raw')
 
 LOGISTICS_DATA = os.path.join(DATA, 'logistics_data.csv')
 MATERIALS_DATA = os.path.join(DATA, 'materials_data.csv')
