@@ -1,15 +1,19 @@
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 import pandas as pd
 from sqlalchemy import create_engine
 import logging
 from sqlalchemy.exc import SQLAlchemyError
 
-# Set up basic logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 # Load environment variables from .env file
 load_dotenv()
+
+# Configuring logging to write to a file
+logs_dir = os.getenv('LOGS_DIR')
+current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+log_filename = f'{logs_dir}/data_ingestion_{current_time}.log'
+logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Accessing credentials and database connection parameters
 db_username = os.getenv('DB_USERNAME')
@@ -57,10 +61,11 @@ def main():
         df4 = read_table(engine, "suppliers")
 
         # Save each dataframe to a Parquet file
-        df1.to_parquet('/path/to/data/df1.parquet')
-        df2.to_parquet('/path/to/data/df2.parquet')
-        df3.to_parquet('/path/to/data/df3.parquet')
-        df4.to_parquet('/path/to/data/df4.parquet')
+        data_ingested_dir = os.getenv('DATA_INGESTED_DIR')
+        df1.to_parquet(f'{data_ingested_dir}/logistics.parquet')
+        df2.to_parquet(f'{data_ingested_dir}/materials.parquet')
+        df3.to_parquet(f'{data_ingested_dir}/projects.parquet')
+        df4.to_parquet(f'{data_ingested_dir}/suppliers.parquet')
 
         logging.info("Data ingestion and storage completed successfully.")
     except Exception as ex:
