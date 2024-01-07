@@ -10,6 +10,7 @@ commands_utils.txt
 secrets.py
 logs
 data/ingestion/data_ingested
+drivers
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

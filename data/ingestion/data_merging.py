@@ -3,15 +3,27 @@ from pyspark.sql.functions import col, to_date
 import os
 from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
+
+postgres_driver = os.getenv('JDBC_DRIVER')
+
 # Initialize Spark session
-spark = SparkSession.builder.appName("Data Merging").getOrCreate()
+spark = SparkSession.builder \
+    .appName("Data Merging") \
+    .config("spark.jars", postgres_driver) \
+    .getOrCreate()
 
 # Function to read Parquet files into DataFrame
 def read_parquet(file_pattern):
     return spark.read.parquet(file_pattern)
 
+# Function to write DataFrame to PostgreSQL
+def write_to_postgres(df, table_name, mode, jdbc_url, properties):
+    df.write.jdbc(url=jdbc_url, table=table_name, mode=mode, properties=properties)
+
 # Function to perform data transformations
-def transform_data(data_ingested_dir):
+def transform_data(data_ingested_dir, jdbc_url, properties):
     # Read ingested data
     logistics_df = read_parquet(os.path.join(data_ingested_dir, "logistics_*.parquet"))
     materials_df = read_parquet(os.path.join(data_ingested_dir, "materials_*.parquet"))
@@ -42,16 +54,32 @@ def transform_data(data_ingested_dir):
     final_df = logistics_and_projects_df.join(materials_and_suppliers_df, list(shared_columns), 'left')
 
     # Save the final consolidated dataframe
-    final_df.write.parquet(os.path.join(data_ingested_dir, "final_consolidated.parquet"))
+    final_df.write.mode("overwrite").parquet(os.path.join(data_ingested_dir, "final_consolidated.parquet"))
+
+    # Write the final DataFrame to PostgreSQL
+    write_to_postgres(final_df, "joined_co2_table", "overwrite", jdbc_url, properties)
 
     return final_df
 
 if __name__ == "__main__":
-    # Load environment variables from .env file
-    load_dotenv()
+    # Database connection parameters
+    db_username = os.getenv('DB_USERNAME')
+    db_password = os.getenv('DB_PASSWORD')
+    db_host = os.getenv('DB_HOST', '127.0.0.1')
+    db_port = os.getenv('DB_PORT', '5432')
+    db_name = os.getenv('DB_NAME', 'postgres')
+
+    # JDBC URL
+    jdbc_url = f"jdbc:postgresql://{db_host}:{db_port}/{db_name}"
+    db_properties = {
+        "user": db_username,
+        "password": db_password,
+        "driver": "org.postgresql.Driver"
+    }
+
     # Load DATA_INGESTED_DIR from environment variable
     data_ingested_dir = os.getenv('DATA_INGESTED_DIR')
     if not data_ingested_dir:
         raise ValueError("DATA_INGESTED_DIR environment variable not set")
 
-    transform_data(data_ingested_dir)
+    transform_data(data_ingested_dir, jdbc_url, db_properties)
