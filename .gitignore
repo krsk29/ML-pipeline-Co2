@@ -9,6 +9,7 @@ run_sql.sh
 commands_utils.txt
 secrets.py
 logs
+data/ingestion/data_ingested
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

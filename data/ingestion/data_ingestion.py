@@ -5,6 +5,10 @@ import pandas as pd
 from sqlalchemy import create_engine
 import logging
 from sqlalchemy.exc import SQLAlchemyError
+from pyspark.sql import SparkSession
+
+# Initialize Spark session
+spark = SparkSession.builder.appName("Data Ingestion").getOrCreate()
 
 # Function to safely get environment variable
 def get_env_variable(var_name, default=None):
@@ -58,11 +62,27 @@ def read_table(engine, table_name, batch_size=None):
         logging.error(f"Error reading table {table_name}: {e}")
         raise
 
+def standardize_dates(batch_df):
+    # List of all possible date columns
+    date_columns = ['transaction_date', 'project_start_date', 'project_end_date']
+
+    for col in date_columns:
+        if col in batch_df.columns:
+            batch_df[col] = pd.to_datetime(batch_df[col]).dt.strftime('%Y-%m-%d')
+    return batch_df
+
+
 #fucntion to save batch data to parquet
 def process_and_save_batches(generator, base_file_path):
     for i, batch in enumerate(generator):
+        batch = standardize_dates(batch)  # Standardize dates
         batch_file_path = f"{base_file_path}_{i}.parquet"
-        batch.to_parquet(batch_file_path)
+        
+        # Convert Pandas DataFrame to Spark DataFrame
+        spark_df = spark.createDataFrame(batch)
+        
+        # Save as Parquet using Spark
+        spark_df.write.parquet(batch_file_path)
 
 # Main function to execute data ingestion
 def main():
