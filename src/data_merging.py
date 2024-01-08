@@ -54,7 +54,7 @@ def transform_data(data_ingested_dir, jdbc_url, properties):
     final_df = logistics_and_projects_df.join(materials_and_suppliers_df, list(shared_columns), 'left')
 
     # Save the final consolidated dataframe
-    final_df.write.mode("overwrite").parquet(os.path.join(data_ingested_dir, "final_consolidated.parquet"))
+    final_df.write.mode("overwrite").parquet(os.path.join(data_preprocessed_dir, "raw_data_joined.parquet"))
 
     # Write the final DataFrame to PostgreSQL
     write_to_postgres(final_df, "joined_co2_table", "overwrite", jdbc_url, properties)
@@ -79,7 +79,8 @@ if __name__ == "__main__":
 
     # Load DATA_INGESTED_DIR from environment variable
     data_ingested_dir = os.getenv('DATA_INGESTED_DIR')
-    if not data_ingested_dir:
-        raise ValueError("DATA_INGESTED_DIR environment variable not set")
+    data_preprocessed_dir = os.getenv('DATA_PREPROCESSED_DIR')
+    if not data_ingested_dir or not data_preprocessed_dir:
+        raise ValueError("DATA_INGESTED_DIR or DATA_PREPROCESSED_DIR environment variable not set")
 
     transform_data(data_ingested_dir, jdbc_url, db_properties)
