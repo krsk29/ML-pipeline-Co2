@@ -36,7 +36,7 @@ The aim is to create a robust pipeline capable of handling large-scale data, sim
 - **Service Restart**: Execute `sudo service postgresql restart` after modifications.
 
 ### Configure Postgres Drivers
-- **Create a drivers folder in the root directory**: place the postgresql driver .jar in the folder. Download it from the website. You will need this driver to post data to your local db. It is used in `data_merging.py`
+- **Create a drivers folder in the root directory**: place the postgresql driver pgJDBC in the root dir. Download it from the website (https://jdbc.postgresql.org/download/). You will need this driver to post data to your local db. It is used in `data_merging.py`
 
 ### Data Import Script
 - **Shell Script**: `run_sql.sh` for importing CSV data.
