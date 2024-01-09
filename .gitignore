@@ -8,7 +8,7 @@ questions.md
 run_sql.sh
 commands_utils.txt
 secrets.py
-logs
+# logs
 data/raw
 drivers
 notes.md

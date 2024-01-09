@@ -19,11 +19,9 @@ The aim is to create a robust pipeline capable of handling large-scale data, sim
 - **Filesystem-Based Approach**: Emulate a data lake structure for scalability.
 - **Local PostgreSQL Database**: Implemented for structured data management.
 
-### Database for Processed Data
-- **SQL Database Usage**: Local databases like SQLite or PostgreSQL for structured data.
-- **NoSQL Database Consideration**: Evaluate MongoDB for complex or semi-structured data.
+### Scripts to Process Data
 - **Data Ingestion Script**: `data_ingestion.py` for efficient data extraction and preparation.
-
+- **Data Merging Script**: `data_merging.py` to merge the 4 datasets ingested from data_ingestion.py - this produces a unique joined dataset for preprocessing and modelling.
 ---
 
 ## PostgreSQL Database Configuration and Data Import
@@ -36,6 +34,9 @@ The aim is to create a robust pipeline capable of handling large-scale data, sim
 - **Authentication Method**: Utilize `scram-sha-256` for security.
 - **Configuration File Location**: `/etc/postgresql/<version>/main/pg_hba.conf`.
 - **Service Restart**: Execute `sudo service postgresql restart` after modifications.
+
+### Configure Postgres Drivers
+- **Create a drivers folder in the root directory**: place the postgresql driver .jar in the folder. Download it from the website. You will need this driver to post data to your local db. It is used in `data_merging.py`
 
 ### Data Import Script
 - **Shell Script**: `run_sql.sh` for importing CSV data.
@@ -52,5 +53,5 @@ The aim is to create a robust pipeline capable of handling large-scale data, sim
 - **Run**: Execute with ./run_sql.sh.
 
 ### Environment and Security
-- **.env File**: For secure database credential management.
+- **.env File**: For secure database credential managemen and for variables used in the project
 - **Security Note**: Exclude .env from version control for privacy.
