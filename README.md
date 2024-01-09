@@ -54,4 +54,29 @@ The aim is to create a robust pipeline capable of handling large-scale data, sim
 
 ### Environment and Security
 - **.env File**: For secure database credential managemen and for variables used in the project
-- **Security Note**: Exclude .env from version control for privacy.
+- **Security Note**: Exclude .env from version control for privacy.## Apache Airflow Integration
+
+
+## Airflow Set-up
+Integration of Apache Airflow into our ML-Pipeline-Co2 project to enhance the automation, scheduling, and monitoring of our data pipeline workflows.
+
+### 1. Installation
+- Installed Apache Airflow within the project's virtual environment to maintain an isolated setup.
+- Used the command `pip install apache-airflow` for installation.
+
+### 2. Initializing Airflow
+- Ran `airflow db init` to initialize Airflow's metadata database.
+- This command created the default `~/airflow` directory, housing the configuration and DAG files.
+
+### 3. PostgreSQL Configuration (In Progress)
+- Plan to configure Airflow to use PostgreSQL instead of the default SQLite.
+- Will modify the `sql_alchemy_conn` line in `airflow.cfg` to point to our PostgreSQL database.
+
+### Next Steps
+
+- Complete the PostgreSQL database configuration for Airflow.
+- Create DAGs to manage and automate tasks in our data pipeline, including data ingestion and merging.
+- Test and validate the setup to ensure efficient workflow management.
+
+### Note
+The integration process is currently in progress and will continue with further configurations and the implementation of DAGs for task automation.
