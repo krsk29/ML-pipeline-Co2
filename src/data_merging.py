@@ -40,6 +40,16 @@ def transform_data(data_ingested_dir, jdbc_url, properties):
     # For 'project_budget' in projects data
     project_budget_median = projects_df.approxQuantile("project_budget", [0.5], 0)[0]
     projects_df = projects_df.fillna({"project_budget": project_budget_median})
+    
+    # Select project_id and project_budget from projects_df
+    project_budget_df = projects_df.select("project_id", "project_budget")
+
+    # Drop project_budget from logistics_df if it exists
+    if 'project_budget' in logistics_df.columns:
+        logistics_df = logistics_df.drop('project_budget')
+
+    # Do a left join with logistics_df on project_id
+    logistics_df = logistics_df.join(project_budget_df, ['project_id'], 'left')
 
     # Merging logistics and projects dataframes
     logistics_and_projects_df = logistics_df.join(projects_df, ['project_id', 'project_budget'], 'left')
