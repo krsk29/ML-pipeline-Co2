@@ -58,7 +58,7 @@ The aim is to create a robust pipeline capable of handling large-scale data, sim
 
 
 ## Airflow Set-up
-Integration of Apache Airflow into our ML-Pipeline-Co2 project to enhance the automation, scheduling, and monitoring of our data pipeline workflows.
+Integration of Apache Airflow to enhance the automation, scheduling, and monitoring of pipeline workflows.
 
 ### 1. Installation
 - Installed Apache Airflow within the project's virtual environment to maintain an isolated setup.
