@@ -1,3 +1,8 @@
+"""
+This module is for merging various data sources into a single dataset and
+writing the results to a PostgreSQL database.
+"""
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, to_date
 import os
@@ -16,14 +21,35 @@ spark = SparkSession.builder \
 
 # Function to read Parquet files into DataFrame
 def read_parquet(file_pattern):
+    """
+    Reads a Parquet file into a DataFrame.
+    """
     return spark.read.parquet(file_pattern)
 
 # Function to write DataFrame to PostgreSQL
 def write_to_postgres(df, table_name, mode, jdbc_url, properties):
+    """
+    Write a DataFrame to a PostgreSQL database.
+
+    :param df: DataFrame to write.
+    :param table_name: Name of the table to write to.
+    :param mode: Write mode for the DataFrame.
+    :param jdbc_url: JDBC URL for the PostgreSQL database.
+    :param properties: Connection properties for the database.
+    """
     df.write.jdbc(url=jdbc_url, table=table_name, mode=mode, properties=properties)
 
 # Function to perform data transformations
 def transform_data(data_ingested_dir, jdbc_url, properties):
+    """
+    Perform data transformations and write the result to PostgreSQL.
+
+    :param spark: Spark session object.
+    :param data_ingested_dir: Directory where ingested data is stored.
+    :param jdbc_url: JDBC URL for the PostgreSQL database.
+    :param properties: Connection properties for the database.
+    :return: Final transformed DataFrame.
+    """
     # Read ingested data
     logistics_df = read_parquet(os.path.join(data_ingested_dir, "logistics_*.parquet"))
     materials_df = read_parquet(os.path.join(data_ingested_dir, "materials_*.parquet"))
