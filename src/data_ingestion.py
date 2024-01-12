@@ -1,3 +1,8 @@
+"""
+This module handles the ingestion of data from a PostgreSQL database,
+processes it, and stores it in Parquet format using PySpark.
+"""
+
 from dotenv import load_dotenv
 import os
 from datetime import datetime
@@ -39,6 +44,11 @@ db_connection = f'postgresql://{db_username}:{db_password}@{db_host}:{db_port}/{
 
 # Function to create database engine
 def create_db_engine():
+    """
+    Create and return a database engine.
+
+    :return: A SQLAlchemy engine connected to the database.
+    """
     try:
         engine = create_engine(db_connection)
         return engine
@@ -48,6 +58,14 @@ def create_db_engine():
 
 # Function to read data from a table
 def read_table(engine, table_name, batch_size=None):
+    """
+    Read data from a database table.
+
+    :param engine: The database engine.
+    :param table_name: The name of the table to read.
+    :param batch_size: The size of the batch to read at a time (for large tables).
+    :return: A generator yielding data batches as DataFrames (if batch_size is set), or a single DataFrame.
+    """
     try:
         if batch_size:
             # Read data in batches
@@ -63,6 +81,12 @@ def read_table(engine, table_name, batch_size=None):
         raise
 
 def standardize_dates(batch_df):
+    """
+    Standardize the format of date columns in a DataFrame.
+
+    :param batch_df: The DataFrame whose date columns are to be standardized.
+    :return: The DataFrame with standardized date formats.
+    """
     # List of all possible date columns
     date_columns = ['transaction_date', 'project_start_date', 'project_end_date']
 
@@ -71,9 +95,14 @@ def standardize_dates(batch_df):
             batch_df[col] = pd.to_datetime(batch_df[col]).dt.strftime('%Y-%m-%d')
     return batch_df
 
-
 #fucntion to save batch data to parquet
 def process_and_save_batches(generator, base_file_path):
+    """
+    Process and save each batch of data from a generator to Parquet format.
+
+    :param generator: A generator yielding data batches.
+    :param base_file_path: The base file path for storing Parquet files.
+    """
     for i, batch in enumerate(generator):
         batch = standardize_dates(batch)  # Standardize dates
         batch_file_path = f"{base_file_path}_{i}.parquet"
@@ -86,6 +115,9 @@ def process_and_save_batches(generator, base_file_path):
 
 # Main function to execute data ingestion
 def main():
+    """
+    Main function to execute the data ingestion process.
+    """
     engine = create_db_engine()
 
     # Read data from each table
