@@ -129,5 +129,6 @@ if __name__ == "__main__":
 
     try:
         transform_data(data_ingested_dir, jdbc_url, db_properties)
+        logging.info("Data transformation and merging completed successfully.")
     except Exception as e:
         logging.error(f"Error in data transformation: {e}")
