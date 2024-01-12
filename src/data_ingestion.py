@@ -113,7 +113,7 @@ def process_and_save_batches(generator, base_file_path):
         spark_df = spark.createDataFrame(batch)
         
         # Save as Parquet using Spark
-        spark_df.write.parquet(batch_file_path)
+        spark_df.write.mode("overwrite").parquet(batch_file_path)
 
 # Main function to execute data ingestion
 def main():
