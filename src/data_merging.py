@@ -2,9 +2,8 @@
 This module is for merging various data sources into a single dataset and
 writing the results to a PostgreSQL database.
 """
-
-from pyspark.sql import SparkSession
 import os
+from pyspark.sql import SparkSession
 from dotenv import load_dotenv
 
 # Load environment variables from .env file

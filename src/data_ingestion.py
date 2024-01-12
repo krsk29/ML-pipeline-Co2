@@ -3,14 +3,16 @@ This module handles the ingestion of data from a PostgreSQL database,
 processes it, and stores it in Parquet format using PySpark.
 """
 
-from dotenv import load_dotenv
 import os
+import logging
 from datetime import datetime
+
 import pandas as pd
 from sqlalchemy import create_engine
-import logging
 from sqlalchemy.exc import SQLAlchemyError
 from pyspark.sql import SparkSession
+from dotenv import load_dotenv
+
 
 # Initialize Spark session
 spark = SparkSession.builder.appName("Data Ingestion").getOrCreate()
