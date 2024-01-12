@@ -3,13 +3,21 @@ This module is for merging various data sources into a single dataset and
 writing the results to a PostgreSQL database.
 """
 import os
+import logging
+
 from pyspark.sql import SparkSession
+
 from dotenv import load_dotenv
+from script_utils import get_env_variable, configure_logging
+
+# Configuring logging to write to a file
+logs_dir = get_env_variable('LOGS_DIR')
+configure_logging(logs_dir, 'data_merging')
 
 # Load environment variables from .env file
 load_dotenv()
 
-postgres_driver = os.getenv('JDBC_DRIVER')
+postgres_driver = get_env_variable('JDBC_DRIVER')
 
 # Initialize Spark session
 spark = SparkSession.builder \
@@ -22,6 +30,8 @@ def read_parquet(file_pattern):
     """
     Reads a Parquet file into a DataFrame.
     """
+    if not os.path.exists(file_pattern):
+        raise FileNotFoundError(f"File pattern {file_pattern} not found")
     return spark.read.parquet(file_pattern)
 
 # Function to write DataFrame to PostgreSQL
@@ -57,8 +67,8 @@ def transform_data(data_ingested_dir, jdbc_url, properties):
     # Handling null values and dropping columns
     # For 'distance_covered' and 'CO2_emission' in logistics data
     distance_covered_median = logistics_df.approxQuantile("distance_covered", [0.5], 0)[0]
-    CO2_median = logistics_df.approxQuantile("CO2_emission", [0.5], 0)[0]
-    logistics_df = logistics_df.fillna({"distance_covered": distance_covered_median, "CO2_emission": CO2_median})
+    co2_median = logistics_df.approxQuantile("CO2_emission", [0.5], 0)[0]
+    logistics_df = logistics_df.fillna({"distance_covered": distance_covered_median, "CO2_emission": co2_median})
     logistics_df = logistics_df.drop("supplier_rating")
 
     # For 'project_budget' in projects data
@@ -117,4 +127,7 @@ if __name__ == "__main__":
     if not data_ingested_dir or not data_preprocessed_dir:
         raise ValueError("DATA_INGESTED_DIR or DATA_PREPROCESSED_DIR environment variable not set")
 
-    transform_data(data_ingested_dir, jdbc_url, db_properties)
+    try:
+        transform_data(data_ingested_dir, jdbc_url, db_properties)
+    except Exception as e:
+        logging.error(f"Error in data transformation: {e}")

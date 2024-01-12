@@ -12,23 +12,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from pyspark.sql import SparkSession
 from dotenv import load_dotenv
-
+from script_utils import get_env_variable, configure_logging
 
 # Initialize Spark session
 spark = SparkSession.builder.appName("Data Ingestion").getOrCreate()
-
-# Function to safely get environment variable
-def get_env_variable(var_name, default=None):
-    value = os.getenv(var_name, default)
-    if value is None:
-        raise ValueError(f"{var_name} environment variable not set")
-    return value
 
 # Load environment variables from .env file
 load_dotenv()
 
 # Accessing environment variables with defensive checks
-logs_dir = get_env_variable('LOGS_DIR')
 data_ingested_dir = get_env_variable('DATA_INGESTED_DIR')
 db_username = get_env_variable('DB_USERNAME')
 db_password = get_env_variable('DB_PASSWORD')
@@ -37,9 +29,8 @@ db_port = get_env_variable('DB_PORT', '5432')
 db_name = get_env_variable('DB_NAME', 'postgres')
 
 # Configuring logging to write to a file
-current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-log_filename = f'{logs_dir}/data_ingestion_{current_time}.log'
-logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logs_dir = get_env_variable('LOGS_DIR')
+configure_logging(logs_dir, 'data_ingestion')
 
 # Accessing credentials and database connection parameters
 db_connection = f'postgresql://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}'
