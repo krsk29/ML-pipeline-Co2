@@ -1,0 +1,20 @@
+import os
+import logging
+from datetime import datetime
+
+def get_env_variable(var_name, default=None):
+    """
+    Safely get an environment variable. If the variable is not found, it raises a ValueError.
+    """
+    value = os.getenv(var_name, default)
+    if value is None:
+        raise ValueError(f"{var_name} environment variable not set")
+    return value
+
+def configure_logging(logs_dir, log_prefix):
+    """
+    Configures logging to write to a file with the given directory and log prefix.
+    """
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    log_filename = f'{logs_dir}/{log_prefix}_{current_time}.log'
+    logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
