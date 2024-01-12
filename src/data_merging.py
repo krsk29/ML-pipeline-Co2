@@ -4,7 +4,6 @@ writing the results to a PostgreSQL database.
 """
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, to_date
 import os
 from dotenv import load_dotenv
 
