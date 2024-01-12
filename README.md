@@ -68,15 +68,17 @@ Integration of Apache Airflow to enhance the automation, scheduling, and monitor
 - Ran `airflow db init` to initialize Airflow's metadata database.
 - This command created the default `~/airflow` directory, housing the configuration and DAG files.
 
-### 3. PostgreSQL Configuration (In Progress)
-- Plan to configure Airflow to use PostgreSQL instead of the default SQLite.
-- Will modify the `sql_alchemy_conn` line in `airflow.cfg` to point to our PostgreSQL database.
+### 3. PostgreSQL Configuration
+- Configured Airflow to use PostgreSQL instead of the default SQLite for improved performance, concurrency handling, and scalability in production environments.
+- Created a dedicated PostgreSQL database and user (airflow_db and airflow_user) for Airflow.
+- Modified the `sql_alchemy_conn` line in `airflow.cfg` within the project's `airflow` directory to connect to the PostgreSQL database.
+- Set `AIRFLOW_HOME` to the project's `airflow` directory and re-initialized Airflow with `airflow db init` for a project-centric approach, enhancing manageability and collaboration.
 
 ### Next Steps
 
-- Complete the PostgreSQL database configuration for Airflow.
-- Create DAGs to manage and automate tasks in our data pipeline, including data ingestion and merging.
-- Test and validate the setup to ensure efficient workflow management.
+- Develop DAGs to manage and automate tasks in our data pipeline, including data ingestion and merging.
+- Test and validate the setup to ensure efficient workflow management and adapt to production needs.
 
 ### Note
-The integration process is currently in progress and will continue with further configurations and the implementation of DAGs for task automation.
+The integration process is ongoing and will include further configurations and the implementation of DAGs for enhanced task automation and pipeline management.
+
