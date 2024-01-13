@@ -22,6 +22,9 @@ The aim is to create a robust pipeline capable of handling large-scale data, sim
 ### Scripts to Process Data
 - **Data Ingestion Script**: `data_ingestion.py` for efficient data extraction and preparation.
 - **Data Merging Script**: `data_merging.py` to merge the 4 datasets ingested from data_ingestion.py - this produces a unique joined dataset for preprocessing and modelling.
+
+### Utility Script
+`script_utils.py` to manage environamental variables and loggin setup
 ---
 
 ## PostgreSQL Database Configuration and Data Import
@@ -73,6 +76,18 @@ Integration of Apache Airflow to enhance the automation, scheduling, and monitor
 - Created a dedicated PostgreSQL database and user (airflow_db and airflow_user) for Airflow.
 - Modified the `sql_alchemy_conn` line in `airflow.cfg` within the project's `airflow` directory to connect to the PostgreSQL database.
 - Set `AIRFLOW_HOME` to the project's `airflow` directory and re-initialized Airflow with `airflow db init` for a project-centric approach, enhancing manageability and collaboration.
+  
+### Set-up contd...  
+- Set-up Airflow authentication by running this code in the environemnt where Airflow is installed:
+    ```bash
+    airflow users create \
+    --username [your_username] \
+    --firstname [Your First Name] \
+    --lastname [Your Last Name] \
+    --role Admin \
+    --email [your_email@example.com] \
+    --password [your_password]
+- Start Airflow webserver with `airflow webserver -p 8080` and access airflow UI from browser on `http://localhost:8080`
 
 ### Next Steps
 
@@ -81,4 +96,3 @@ Integration of Apache Airflow to enhance the automation, scheduling, and monitor
 
 ### Note
 The integration process is ongoing and will include further configurations and the implementation of DAGs for enhanced task automation and pipeline management.
-
