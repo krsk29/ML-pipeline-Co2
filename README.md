@@ -4,7 +4,7 @@
 This project develops an end-to-end machine learning pipeline to predict CO2 emissions in construction logistics. It leverages PySpark, Apache Airflow, Docker, PostgreSQL and Github Actions to simulate a big data environment and production at scale. 
 
 The project is in development. Once V1 is deployed, the upgrades to followe are:
-- Implement a chatbot - will use LLM and fine-tune it on the Logistics Data so that users can ask questions about it and receive answers
+- Implement a chatbot - will use LLM and fine-tune it on the Logistics Data so that users can ask questions about it and receive answers (Switch to LLM branch to see inital architecture design - not merged yet)
 - Include Apache Beam in the tech-stack to unify all data processing jobs (which are currently performed in scripts and managed by Apache Airflow)
 - more to follow ..
 
