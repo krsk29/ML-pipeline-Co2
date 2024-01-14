@@ -54,6 +54,70 @@ This architecture is designed to be scalable and handle large-scale data pre-pro
 - **Monitoring with Prometheus & Grafana**:
   - *Prometheus* is used for tracking the performance of microservices over time and log various metrics.
   - *Grafana* is used in conjunction as it offers visualisation capabilities that will simplify the understanding of the logs and metrics   provided by Prometheus
+
+### LLM implementation - Architecture Diagram (3 potential options)
+![Architecture Diagram](images/llm_co2_pipeline_diagram.jpg)
+
+### LLM Architecture Overview:
+
+#### Option 1
+- **Pros**: 
+  - High accuracy for data-specific queries. Text to SQL (NL2SQL) return exact information from DB
+  - Precise: for a question like "What is the total CO2 emission for truck transport in 2020?", the system can execute an exact SQL query to calculate this sum from your logistics data
+  - Faster: direct query to DB and fast response
+- **Cons**: 
+  - Limited to just queries: for instance, if a user asks, "Which transportation method is least harmful to the environment?" the system will struggle as it requires interpretive analysis and not just data retrieval
+
+#### Option 2
+- **Pros**:
+  - NLP: can understand and respond to a wider range of queries. For example "Tell me about the major suppliers in 2020 and their ratings" would be interpreted correctly
+  - More Complex Queries: for example look at trends like "What trends have we seen in material costs over the last five years?"
+- **Cons**:
+  - Limited to Training Data: For example if the model wasn’t trained with data from 2017, it can’t accurately answer "What was the average project budget in 2017?".
+  - Approximations instead of Precision: For a specific query like "How much material was transported by rail in Q3 of 2019?", the model will provide an estimated answer rather than an precise one because it doesn't directly query the database
+  
+  - Generating Training Data is a lenghty process:
+    - 1: Data Aggregation and Analysis: statistics about the data
+    - 2: Text Descriptions and Narrative: Create descriptions about the statistics from the data. For example "Projects using Rail transport tend to have a lower average transportation cost compared to Truck transport. In 2020, projects using Rail had an average transportation cost of X whereas Air transport averaged Y."
+    - 3: Question & Answer Pairs: Formulate questions based on the narrativesves created
+    - 4: Add Context and Comparisons
+    - 5: Include cases for outliers: for example what if some urgent shipment is needed?
+    - 6: Create Vector Embeddings that an LLM can understand
+
+#### Option 3
+In a hybrid system, use an LLM to understand the question's intent and then decide whether to:
+  - Execute an SQL query for precise data retrieval
+  - Use the LLM's trained knowledge to answer more complex queries
+
+- **Pros**:
+  - best of both worlds
+- **Cons**:
+  - more difficult to implement and requires efficient decision-making in the intent detection and data processing layer
+- **Flow Example 1**:
+  - *User Query*: "What was the most used material in projects during 2020?"
+  - *Chatbot Interface*: Receives the query and passes it to the LLM
+  - *LLM for Intent Recognition*: The LLM interprets the query as needing a statistical analysis 
+  - *Data Processing Layer*: Decides that this query requires precise data retrieval
+  - *Query Processor and Database*:
+    -   Translates the LLM’s interpretation into a SQL query: "SELECT material_id, COUNT() FROM logistics_data WHERE YEAR(transaction_date) = 2020 GROUP BY material_id ORDER BY COUNT() DESC LIMIT 1"
+    - Executes the query and retrieves the specific answer
+  - *Response to User*: Provides the exact material ID or name that was most used in 2020
+
+- **Flow Example 2**:
+  - *User Query*: "Does rail transport typically results in lower transportation costs than truck transport? In 2020, what was the average cost difference?"
+  - *Chatbot Interface*: Receives the query and passes it to the LLM
+  - *LLM for Intent Recognition*: Analyzes the query and identifies two distinct parts:
+    - A general trend analysis ("Does rail transport typically results in lower transportation costs than Truck transport?")
+    - A specific data request ("In 2020, what was the average cost difference")
+  - *Data Processing Layer*: 
+    - Determines that the first part of the query can be answered based on the patterns and trends the LLM learned during training
+    - Determines that the second part requires a specific data query to fetch the exact number from the database
+  - *Hybrid Approach kicks in*:
+    - LLM Response for first part
+    - Query Generated for second part and retireve data from DB
+  - *Response to User*: Combine the response from both the LLM and the DB Query
+    - Example response: ""Rail transport typically results in lower transportation costs than Truck transport. In 2020, the average cost difference was £5 Mil"
+  - *Human Loop*: system could ask for feedback on response and based on human response in can log the info for future improvements
   
 ---
 
