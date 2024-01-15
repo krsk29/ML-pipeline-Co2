@@ -5,10 +5,13 @@ import importlib.util
 import os
 import sys
 
-from src.script_utils import setup_environment
-
 # Setup environment 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SRC_DIR = os.path.join(ROOT_DIR, 'src')
+if SRC_DIR not in sys.path:
+    sys.path.insert(0, SRC_DIR)
+
+from src.script_utils import setup_environment
 setup_environment(ROOT_DIR)
 
 DATA_INGESTION_FILE = os.getenv('DATA_INGESTION_FILE')
