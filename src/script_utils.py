@@ -1,6 +1,9 @@
 import os
+import sys
 import logging
 from datetime import datetime
+from dotenv import load_dotenv
+
 
 def get_env_variable(var_name, default=None):
     """
@@ -18,3 +21,17 @@ def configure_logging(logs_dir, log_prefix):
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     log_filename = f'{logs_dir}/{log_prefix}_{current_time}.log'
     logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def setup_environment(root_dir):
+    """
+    Sets up the environment by loading the .env file and configuring the Python path.
+    """
+    # Load .env file
+    env_file = os.path.join(root_dir, '.env')
+    load_dotenv(env_file)
+
+    # Add src directory to Python path
+    src_dir = os.path.join(root_dir, 'src')
+    if src_dir not in sys.path:
+        sys.path.append(src_dir)
+
