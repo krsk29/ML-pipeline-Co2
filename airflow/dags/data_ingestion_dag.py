@@ -1,5 +1,5 @@
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import importlib.util
 import os
@@ -23,6 +23,36 @@ spec.loader.exec_module(data_ingestion_script)
 
 # Import the main function from data_ingestion_script
 data_ingestion_main = data_ingestion_script.main
+
+# Define default arguments for the DAG
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime(2024, 1, 15),
+    'email': ['admin@email.com'],
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+# Define the DAG
+dag = DAG(
+    'data_ingestion_dag',
+    default_args=default_args,
+    description='DAG for data ingestion process',
+    schedule_interval=timedelta(days=1),
+)
+
+# Define the task using PythonOperator
+ingest_data_task = PythonOperator(
+    task_id='ingest_data',
+    python_callable=data_ingestion_main,
+    dag=dag,
+)
+
+# Set the task sequence
+ingest_data_task
 
 
 
