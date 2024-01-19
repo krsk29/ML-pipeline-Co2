@@ -8,7 +8,7 @@ MODELS = os.path.join(BASE_DIR, 'models')
 RANDOM_FOREST_MODEL = os.path.join(MODELS, 'random_forest')
 
 #data
-DATA = os.path.join(BASE_DIR, 'data', 'raw')
+DATA = os.path.join(BASE_DIR, 'data', 'experiments-data')
 
 LOGISTICS_DATA = os.path.join(DATA, 'logistics_data.csv')
 MATERIALS_DATA = os.path.join(DATA, 'materials_data.csv')
@@ -18,6 +18,6 @@ FINAL_DATA_parquet = os.path.join(DATA, 'final_df.parquet')
 FINAL_DATA_csv = os.path.join(DATA, 'final_df.csv')
 
 # pre-processed data for training
-TEST_TRANSFORMED_DATA = os.path.join(DATA, 'raw', 'test_transformed.parquet')
-TRAIN_TRANSFORMED_DATA = os.path.join(DATA, 'raw', 'train_transformed.parquet')
+TEST_TRANSFORMED_DATA = os.path.join(DATA, 'test_transformed.parquet')
+TRAIN_TRANSFORMED_DATA = os.path.join(DATA, 'train_transformed.parquet')
 
