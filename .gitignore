@@ -9,11 +9,16 @@ run_sql.sh
 commands_utils.txt
 secrets.py
 # logs
+logs/scheduler
 data/raw
 drivers
 notes.md
-airflow/airflow.cfg
-airflow/airflow.db
+# Ignore everything in the airflow directory
+airflow/*
+# But re-include the dags directory
+!airflow/dags/
+
+/*sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -145,3 +150,4 @@ cython_debug/
 
 # Jupyter
 .ipynb_checkpoints
+airflow/logs/scheduler/latest

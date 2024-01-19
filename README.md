@@ -119,6 +119,7 @@ Integration of Apache Airflow to enhance the automation, scheduling, and monitor
 ### 2. Initializing Airflow
 - Ran `airflow db init` to initialize Airflow's metadata database.
 - This command created the default `~/airflow` directory, housing the configuration and DAG files.
+- AIRFLOW_HOME Setting: Set AIRFLOW_HOME environment variable to point to the airflow directory in your project root, ensuring Airflow configuration, DAGs, and logs are stored within the project directory. This setting is vital for maintaining a project-centric setup. To do this, export the env variable and add it ro `~/bashrc.sh`
 
 ### 3. PostgreSQL Configuration
 - Configured Airflow to use PostgreSQL instead of the default SQLite for improved performance, concurrency handling, and scalability in production environments.
@@ -138,10 +139,11 @@ Integration of Apache Airflow to enhance the automation, scheduling, and monitor
     --password [your_password]
 - Start Airflow webserver with `airflow webserver -p 8080` and access airflow UI from browser on `http://localhost:8080`
 
+### DAGs
+- **Data Ingestion DAG**: Developed a DAG (data_ingestion_dag) to automate the data ingestion process. This DAG uses dynamic Python path resolution and environment variable loading for seamless integration with the project's Python modules
+
 ### Next Steps
 
-- Develop DAGs to manage and automate tasks in our data pipeline, including data ingestion and merging.
-- Test and validate the setup to ensure efficient workflow management and adapt to production needs.
-
-### Note
-The integration process is ongoing and will include further configurations and the implementation of DAGs for enhanced task automation and pipeline management.
+- Ongoing Development: Continue to develop and refine additional DAGs for data processing and other pipeline tasks.
+- Continuous workflow management
+- 
