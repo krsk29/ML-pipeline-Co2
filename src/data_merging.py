@@ -10,12 +10,11 @@ from pyspark.sql import SparkSession
 from dotenv import load_dotenv
 from script_utils import get_env_variable, configure_logging
 
+# Load environment variables from .env file
+load_dotenv()
 # Configuring logging to write to a file
 logs_dir = get_env_variable('LOGS_DIR')
 configure_logging(logs_dir, 'data_merging')
-
-# Load environment variables from .env file
-load_dotenv()
 
 postgres_driver = get_env_variable('JDBC_DRIVER')
 
@@ -48,7 +47,7 @@ def write_to_postgres(df, table_name, mode, jdbc_url, properties):
     df.write.jdbc(url=jdbc_url, table=table_name, mode=mode, properties=properties)
 
 # Function to perform data transformations
-def transform_data(data_ingested_dir, jdbc_url, properties):
+def transform_data(data_ingested_dir, data_preprocessed_dir, jdbc_url, properties):
     """
     Perform data transformations and write the result to PostgreSQL.
 
@@ -128,7 +127,7 @@ def main():
         raise ValueError("DATA_INGESTED_DIR or DATA_PREPROCESSED_DIR environment variable not set")
 
     try:
-        transform_data(data_ingested_dir, jdbc_url, db_properties)
+        transform_data(data_ingested_dir, data_preprocessed_dir, jdbc_url, db_properties)
         logging.info("Data transformation and merging completed successfully.")
     except Exception as e:
         logging.error(f"Error in data transformation: {e}")
