@@ -105,7 +105,7 @@ def transform_data(data_ingested_dir, jdbc_url, properties):
 
     return final_df
 
-if __name__ == "__main__":
+def main():
     # Database connection parameters
     db_username = os.getenv('DB_USERNAME')
     db_password = os.getenv('DB_PASSWORD')
@@ -132,3 +132,6 @@ if __name__ == "__main__":
         logging.info("Data transformation and merging completed successfully.")
     except Exception as e:
         logging.error(f"Error in data transformation: {e}")
+
+if __name__ == "__main__":
+    main()
