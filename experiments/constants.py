@@ -4,11 +4,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 #models
-MODELS = os.path.join(BASE_DIR, 'models')
+MODELS = os.path.join(BASE_DIR, 'experiments', 'experimentation_models')
 RANDOM_FOREST_MODEL = os.path.join(MODELS, 'random_forest')
 
 #data
-DATA = os.path.join(BASE_DIR, 'data', 'experiments-data')
+DATA = os.path.join(BASE_DIR, 'experiments', 'experiments-data')
 
 LOGISTICS_DATA = os.path.join(DATA, 'logistics_data.csv')
 MATERIALS_DATA = os.path.join(DATA, 'materials_data.csv')
