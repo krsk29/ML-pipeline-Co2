@@ -17,6 +17,7 @@ notes.md
 airflow/*
 # But re-include the dags directory
 !airflow/dags/
+mlruns
 
 /*sh
 
