@@ -19,6 +19,7 @@ airflow/*
 !airflow/dags/
 mlruns
 mlartifacts
+pipeline_logs
 
 /*sh
 
