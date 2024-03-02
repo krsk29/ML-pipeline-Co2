@@ -184,9 +184,9 @@ def train_random_forest_regressor(TRAIN_TRANSFORMED_DF, TEST_TRANSFORMED_DF):
 
         # parameter grid 
         paramGrid = (ParamGridBuilder()
-                    .addGrid(rf.numTrees, [5, 20])  # List of trees to test
-                    .addGrid(rf.maxDepth, [3, 5])    # List of maximum depths to test
-                    .addGrid(rf.maxBins, [24])        # List of bins to test
+                    .addGrid(rf.numTrees, [10, 30])  # List of trees to test
+                    .addGrid(rf.maxDepth, [5, 10])    # List of maximum depths to test
+                    .addGrid(rf.maxBins, [32])        # List of bins to test
                     .build())
 
         # evaluator for the cross-validation
