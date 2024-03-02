@@ -142,6 +142,16 @@ Integration of Apache Airflow to enhance the automation, scheduling, and monitor
 ### DAGs
 - **Data Ingestion DAG**: Developed a DAG (data_ingestion_dag) to automate the data ingestion process. This DAG uses dynamic Python path resolution and environment variable loading for seamless integration with the project's Python modules
 
+## ML-flow
+- **Overview**
+Implement MLflow to manage the machine learning lifecycle, focusing on tracking experiments, versioning models, and deploying. It structures and scales model development and operationalization effectively.
+
+- **Experiment Tracking**
+Use MLflow in the modelling.py script to track experiments, logging essential details like model parameters, metrics, and artifacts. This enables organized model comparisons and selections based on data.
+
+- **Model Registry**
+Utilize MLflow's Model Registry to oversee the model lifecycle, from development to deployment. Register, version, and tag top models for easy access and management.
+
 ### Next Steps
 
 - Ongoing Development: Continue to develop and refine additional DAGs for data processing and other pipeline tasks.
