@@ -18,6 +18,7 @@ airflow/*
 # But re-include the dags directory
 !airflow/dags/
 mlruns
+mlartifacts
 
 /*sh
 
