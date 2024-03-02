@@ -17,15 +17,7 @@ import numpy as np
 from dotenv import load_dotenv
 from script_utils import get_env_variable, configure_logging
 
-# from constants import TEST_TRANSFORMED_DATA, TRAIN_TRANSFORMED_DATA, MODELS, RANDOM_FOREST_MODEL
-# quickly retrieving data for ml-flow
-# Get the directory of the current script
-current_script_dir = os.path.dirname(os.path.realpath(__file__))
-# Construct the path to the experiments-data directory
-data_dir_path = os.path.join(current_script_dir, '..', 'experiments', 'experiments-data')
-# Construct the full path to data file
-train_data_file_path = os.path.join(data_dir_path, 'train_transformed.parquet')
-test_data_file_path = os.path.join(data_dir_path, 'test_transformed.parquet')
+from constant_variables import TEST_TRANSFORMED_DATA, TRAIN_TRANSFORMED_DATA
 
 # loading env_variables
 load_dotenv()
@@ -238,8 +230,8 @@ def main():
         .getOrCreate()
 
     # Data preparation
-    TEST_TRANSFORMED_DF = spark.read.parquet(test_data_file_path)
-    TRAIN_TRANSFORMED_DF = spark.read.parquet(train_data_file_path)
+    TEST_TRANSFORMED_DF = spark.read.parquet(TEST_TRANSFORMED_DATA)
+    TRAIN_TRANSFORMED_DF = spark.read.parquet(TRAIN_TRANSFORMED_DATA)
 
     # Train and log Linear Regression model
     train_linear_regression(TRAIN_TRANSFORMED_DF, TEST_TRANSFORMED_DF)
