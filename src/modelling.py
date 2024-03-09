@@ -1,7 +1,3 @@
-
-import os
-import logging
-
 from pyspark.sql import SparkSession
 
 from pyspark.ml.regression import RandomForestRegressor, LinearRegression, GBTRegressor
@@ -14,16 +10,11 @@ import mlflow.spark
 import matplotlib.pyplot as plt
 import numpy as np
 
-from dotenv import load_dotenv
-from script_utils import get_env_variable, configure_logging
+from script_utils import configure_logging
+from constant_variables import TEST_TRANSFORMED_DATA, TRAIN_TRANSFORMED_DATA, LOGS_DIR
 
-from constant_variables import TEST_TRANSFORMED_DATA, TRAIN_TRANSFORMED_DATA
-
-# loading env_variables
-load_dotenv()
 # Configuring logging to write to a file
-logs_dir = get_env_variable('LOGS_DIR')
-configure_logging(logs_dir, 'modelling')
+configure_logging(LOGS_DIR, 'modelling')
 
 def _plot_residuals(predictions):
     # calculate residuals

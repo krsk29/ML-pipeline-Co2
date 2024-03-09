@@ -35,3 +35,12 @@ def setup_environment(root_dir):
     if src_dir not in sys.path:
         sys.path.append(src_dir)
 
+# Function to read Parquet files into DataFrame
+def read_parquet(file_pattern, spark):
+    """
+    Reads Parquet files matching a pattern into a DataFrame.
+    """
+    return spark.read.parquet(file_pattern)
+
+
+

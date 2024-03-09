@@ -7,44 +7,21 @@ import logging
 
 from pyspark.sql import SparkSession
 
-from dotenv import load_dotenv
-from script_utils import get_env_variable, configure_logging
+from constant_variables import LOGS_DIR
+from db_utils import DBUtils
+from script_utils import configure_logging, read_parquet
 
-# Load environment variables from .env file
-load_dotenv()
+# Initialise DBUtils instance
+db_utils = DBUtils()
+
 # Configuring logging to write to a file
-logs_dir = get_env_variable('LOGS_DIR')
-configure_logging(logs_dir, 'data_merging')
-
-postgres_driver = get_env_variable('JDBC_DRIVER')
+configure_logging(LOGS_DIR, 'data_merging')
 
 # Initialize Spark session
 spark = SparkSession.builder \
     .appName("Data Merging") \
-    .config("spark.jars", postgres_driver) \
+    .config("spark.jars", db_utils.jdbc_driver) \
     .getOrCreate()
-
-# Function to read Parquet files into DataFrame
-def read_parquet(file_pattern):
-    """
-    Reads a Parquet file into a DataFrame.
-    """
-    if not os.path.exists(file_pattern):
-        raise FileNotFoundError(f"File pattern {file_pattern} not found")
-    return spark.read.parquet(file_pattern)
-
-# Function to write DataFrame to PostgreSQL
-def write_to_postgres(df, table_name, mode, jdbc_url, properties):
-    """
-    Write a DataFrame to a PostgreSQL database.
-
-    :param df: DataFrame to write.
-    :param table_name: Name of the table to write to.
-    :param mode: Write mode for the DataFrame.
-    :param jdbc_url: JDBC URL for the PostgreSQL database.
-    :param properties: Connection properties for the database.
-    """
-    df.write.jdbc(url=jdbc_url, table=table_name, mode=mode, properties=properties)
 
 # Function to perform data transformations
 def transform_data(data_ingested_dir, data_preprocessed_dir, jdbc_url, properties):
@@ -58,10 +35,10 @@ def transform_data(data_ingested_dir, data_preprocessed_dir, jdbc_url, propertie
     :return: Final transformed DataFrame.
     """
     # Read ingested data
-    logistics_df = read_parquet(os.path.join(data_ingested_dir, "logistics_*.parquet"))
-    materials_df = read_parquet(os.path.join(data_ingested_dir, "materials_*.parquet"))
-    projects_df = read_parquet(os.path.join(data_ingested_dir, "projects_*.parquet"))
-    suppliers_df = read_parquet(os.path.join(data_ingested_dir, "suppliers_*.parquet"))
+    logistics_df = read_parquet(os.path.join(data_ingested_dir, "logistics_*.parquet"), spark)
+    materials_df = read_parquet(os.path.join(data_ingested_dir, "materials_*.parquet"), spark)
+    projects_df = read_parquet(os.path.join(data_ingested_dir, "projects_*.parquet"), spark)
+    suppliers_df = read_parquet(os.path.join(data_ingested_dir, "suppliers_*.parquet"), spark)
 
     # Handling null values and dropping columns
     # For 'distance_covered' and 'CO2_emission' in logistics data
@@ -100,23 +77,17 @@ def transform_data(data_ingested_dir, data_preprocessed_dir, jdbc_url, propertie
     final_df.write.mode("overwrite").parquet(os.path.join(data_preprocessed_dir, "raw_data_joined.parquet"))
 
     # Write the final DataFrame to PostgreSQL
-    write_to_postgres(final_df, "joined_co2_table", "overwrite", jdbc_url, properties)
+    write_to_db = db_utils.write_to_postgres()
+    write_to_db(final_df, "joined_co2_table", "overwrite", jdbc_url, properties)
 
     return final_df
 
 def main():
-    # Database connection parameters
-    db_username = os.getenv('DB_USERNAME')
-    db_password = os.getenv('DB_PASSWORD')
-    db_host = os.getenv('DB_HOST', '127.0.0.1')
-    db_port = os.getenv('DB_PORT', '5432')
-    db_name = os.getenv('DB_NAME', 'postgres')
-
     # JDBC URL
-    jdbc_url = f"jdbc:postgresql://{db_host}:{db_port}/{db_name}"
+    jdbc_url = db_utils.jdbc_url
     db_properties = {
-        "user": db_username,
-        "password": db_password,
+        "user": db_utils.db_username,
+        "password": db_utils.db_password,
         "driver": "org.postgresql.Driver"
     }
 
