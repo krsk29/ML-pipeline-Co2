@@ -11,6 +11,7 @@ secrets.py
 # logs
 logs/scheduler
 data/raw
+data/raw_src
 drivers
 notes.md
 # Ignore everything in the airflow directory

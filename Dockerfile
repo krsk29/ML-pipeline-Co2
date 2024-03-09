@@ -1,27 +1,22 @@
-# Use Python Alpine image for the builder stage
-FROM python:3.10.13-alpine3.19 as builder
+FROM python:3.10-slim as builder
 
-# Install build dependencies
-RUN apk add --no-cache build-base libffi-dev
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential libffi-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install packages and dependencies
 RUN pip install --no-cache-dir mlflow==2.10.2 pyspark==3.5.0
 
-# Multi-stage build: Start with a fresh Alpine image for the final build
-FROM python:3.10.13-alpine3.19
+FROM python:3.10-slim
 
-# Copy installed Python packages from the builder stage
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
 # Create directory inside container for the app
 WORKDIR /app
 
-# Copy necessary directories from the project dir
 COPY src ./src
 COPY mlartifacts ./mlartifacts
 COPY mlruns ./mlruns
 
-# Expose container port that MLflow will use
 EXPOSE 5000
 
 # Set entrypoint to serve the model
